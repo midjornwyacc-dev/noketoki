@@ -2,7 +2,9 @@ use crate::history::{self, HistoryItem};
 use crate::secrets;
 use crate::settings::{self, AppSettings};
 use crate::state::AppState;
-use tauri::{AppHandle, Manager, State};
+use tauri::{AppHandle, State};
+#[cfg(not(target_os = "macos"))]
+use tauri::Manager;
 
 #[derive(serde::Serialize)]
 #[serde(rename_all = "camelCase")]

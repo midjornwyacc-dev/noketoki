@@ -74,11 +74,14 @@ pub fn run() {
                     }
                 }
                 tauri::RunEvent::Exit => {
-                    let state = app.state::<AppState>();
-                    if let Ok(guard) = state.stop_hotkeys.lock() {
-                        if let Some(stop) = guard.as_ref() {
-                            stop.store(true, std::sync::atomic::Ordering::Relaxed);
-                        }
+                    let stop = app
+                        .state::<AppState>()
+                        .stop_hotkeys
+                        .lock()
+                        .ok()
+                        .and_then(|guard| guard.clone());
+                    if let Some(stop) = stop {
+                        stop.store(true, std::sync::atomic::Ordering::Relaxed);
                     }
                 }
                 _ => {}
@@ -98,10 +101,11 @@ fn create_macos_windows(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error
         .visible(false)
         .build()?;
 
-    settings.on_window_event(|window, event| {
+    let settings_ref = settings.clone();
+    settings.on_window_event(move |event| {
         if let tauri::WindowEvent::CloseRequested { api, .. } = event {
             api.prevent_close();
-            let _ = window.hide();
+            let _ = settings_ref.hide();
         }
     });
 
