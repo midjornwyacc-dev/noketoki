@@ -84,8 +84,14 @@ export class DictationController {
     const clip = await this.collectClip()
     if (this.session !== session) return
     if (!clip) {
-      this.state = reduceDictation(this.state, { type: 'esc' })
-      this.pushPill({ phase: 'hidden' })
+      this.state = reduceDictation(this.state, {
+        type: 'transcribe-fail',
+        error: 'Не удалось получить запись с микрофона.'
+      })
+      this.pushPill({ phase: 'error', error: this.state.error })
+      setTimeout(() => {
+        if (this.state.phase === 'idle') this.pushPill({ phase: 'hidden' })
+      }, 2200)
       return
     }
 
@@ -216,7 +222,11 @@ export class DictationController {
   }
 
   private pushPill(state: PillState): void {
-    if (state.phase === 'hidden') this.pill.hide()
+    if (state.phase === 'hidden') {
+      this.pill.hide()
+    } else {
+      showPillInactive(this.pill)
+    }
     if (!this.pill.isDestroyed()) this.pill.webContents.send(IPC.pillState, state)
   }
 }

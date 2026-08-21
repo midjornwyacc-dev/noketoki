@@ -15,17 +15,23 @@ describe('dictation state machine', () => {
     expect(reduceDictation(recording, { type: 'max-duration' }).phase).toBe('transcribing')
   })
 
-  it('cancels recording and transcribing on Esc without keeping insert text from this take', () => {
+  it('returns to idle on Esc from recording or transcribing', () => {
     const recording = reduceDictation(initialDictationState(), { type: 'ptt-down' })
-    const cancelled = reduceDictation(recording, { type: 'esc' })
-    expect(cancelled.phase).toBe('idle')
-    expect(cancelled.shouldCapture).toBe(false)
-    expect(cancelled.lastText).toBeNull()
-
+    expect(reduceDictation(recording, { type: 'esc' }).phase).toBe('idle')
+    expect(reduceDictation(recording, { type: 'esc' }).shouldCapture).toBe(false)
     const transcribing = reduceDictation(recording, { type: 'ptt-up' })
-    const cancelledLater = reduceDictation(transcribing, { type: 'esc' })
-    expect(cancelledLater.phase).toBe('idle')
-    expect(cancelledLater.lastText).toBeNull()
+    expect(reduceDictation(transcribing, { type: 'esc' }).phase).toBe('idle')
+  })
+
+  it('keeps a previous lastText when Esc cancels a later take', () => {
+    let state = reduceDictation(initialDictationState(), { type: 'ptt-down' })
+    state = reduceDictation(state, { type: 'ptt-up' })
+    state = reduceDictation(state, { type: 'transcribe-ok', text: 'kept' })
+    state = reduceDictation(state, { type: 'insert-ok' })
+    state = reduceDictation(state, { type: 'ptt-down' })
+    state = reduceDictation(state, { type: 'esc' })
+    expect(state.phase).toBe('idle')
+    expect(state.lastText).toBe('kept')
   })
 
   it('keeps lastText when insert fails so paste-last can retry', () => {

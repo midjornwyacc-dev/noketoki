@@ -33,7 +33,7 @@ export function reduceDictation(state: DictationState, event: DictationEvent): D
       return { ...state, phase: 'transcribing', shouldCapture: false, error: null }
     case 'esc':
       if (state.phase === 'idle') return state
-      return { ...state, phase: 'idle', shouldCapture: false, lastText: null, error: null }
+      return { ...state, phase: 'idle', shouldCapture: false, error: null }
     case 'clip-too-short':
       if (state.phase !== 'recording' && state.phase !== 'transcribing') return state
       return {
@@ -55,7 +55,6 @@ export function reduceDictation(state: DictationState, event: DictationEvent): D
       return {
         ...state,
         phase: 'idle',
-        lastText: null,
         error: event.error
       }
     case 'insert-ok':
