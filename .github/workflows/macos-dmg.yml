@@ -1,0 +1,82 @@
+name: macOS DMG
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+env:
+  CI: true
+
+jobs:
+  dmg:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Cargo
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - name: Install JS dependencies
+        run: npm ci
+
+      - name: Build unsigned macOS DMG
+        run: |
+          npx tauri build --bundles dmg --verbose --config '{
+            "bundle": {
+              "macOS": {
+                "signingIdentity": "-",
+                "hardenedRuntime": false
+              }
+            }
+          }'
+
+      - name: Stage DMG asset
+        run: |
+          shopt -s nullglob
+          files=(src-tauri/target/release/bundle/dmg/*.dmg)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No DMG under src-tauri/target/release/bundle/dmg"
+            find src-tauri/target/release/bundle -type f -print || true
+            exit 1
+          fi
+          cp "${files[0]}" Noketoki-0.1.0-macos.dmg
+          ls -lh Noketoki-0.1.0-macos.dmg
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v0.1.0
+          name: Noketoki 0.1.0
+          draft: false
+          prerelease: false
+          fail_on_unmatched_files: true
+          make_latest: true
+          files: Noketoki-0.1.0-macos.dmg
+          body: |
+            Noketoki — диктовка через AssemblyAI: удерживаете горячую клавишу, говорите, отпускаете — текст вставляется в активное поле.
+
+            ## Установка
+            1. Откройте DMG и перетащите **Noketoki** в Программы.
+            2. Сборка **без подписи Apple**. При первом запуске: правый клик по приложению → **Открыть** (Gatekeeper).
+            3. Разрешите **Микрофон** и **Универсальный доступ**.
+            4. Вставьте ключ AssemblyAI в Настройках. Он хранится в связке ключей, не в git.
+            5. Курсор в Notes или поле браузера → зажмите **Control+Option** → говорите → отпустите.
+
+            Esc отменяет запись. Если вставка не прошла — **Control+Shift+V**.
