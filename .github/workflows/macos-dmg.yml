@@ -32,7 +32,11 @@ jobs:
           workspaces: src-tauri -> target
 
       - name: Install JS dependencies
-        run: npm install
+        run: |
+          # Lockfile was generated on Linux; npm skips darwin optional binaries
+          # (rollup#5073 / npm#4828). Fresh install on the runner picks them up.
+          rm -rf node_modules package-lock.json
+          npm install
 
       - name: Build unsigned macOS DMG
         run: |
