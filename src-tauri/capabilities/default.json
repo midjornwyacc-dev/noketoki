@@ -1,0 +1,14 @@
+{
+  "identifier": "default",
+  "description": "Shared commands for the settings, pill, and iOS windows",
+  "windows": ["main", "settings", "pill"],
+  "permissions": [
+    "core:default",
+    "core:event:default",
+    "core:window:allow-show",
+    "core:window:allow-hide",
+    "core:window:allow-set-focus",
+    "opener:default",
+    "app-commands"
+  ]
+}

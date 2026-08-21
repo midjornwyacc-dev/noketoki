@@ -1,0 +1,5 @@
+Externals/
+Pods/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+derived/

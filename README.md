@@ -1,64 +1,105 @@
 # Noketoki
 
-Диктовка из строки меню macOS. Удерживаете горячую клавишу, говорите, отпускаете — текст вставляется в активное поле. Распознавание идёт через [AssemblyAI Sync STT](https://www.assemblyai.com/docs/api-reference/sync-api/transcribe), очистка — через [LLM Gateway](https://www.assemblyai.com/docs/llm-gateway/quickstart) тем же ключом. Аккаунтов и своего сервера нет: каждый вставляет свой API-ключ в Настройках.
+Диктовка через [AssemblyAI Sync STT](https://www.assemblyai.com/docs/api-reference/sync-api/transcribe) и лёгкую очистку в [LLM Gateway](https://www.assemblyai.com/docs/llm-gateway/quickstart). Один репозиторий, оболочка [Tauri 2](https://v2.tauri.app/).
 
-## Требования
+- **macOS** — иконка в строке меню, удержание Control+Option, плашка с уровнем (не живые слова), вставка в активное поле через буфер обмена.
+- **iOS** — своё приложение с большой кнопкой hold-to-talk, результат в текстовом поле, Копировать / Поделиться. Это **не** системная клавиатура и не расширение Keyboard.
 
-- macOS (это цель v1; Windows не поддерживается)
+Аккаунтов нет. Каждый вставляет свой ключ AssemblyAI. На Mac и iPhone ключ лежит в связке ключей, не в git и не в логах.
+
+## Что нужно на Mac
+
 - Node.js 22+
+- Rust 1.88+ (`rustup`; в репозитории есть `rust-toolchain.toml`)
+- Xcode + Command Line Tools (`xcode-select --install`)
+- Для iOS на устройстве: Apple ID в Xcode → Settings → Accounts
 - Ключ AssemblyAI
 
-## Запуск для разработки
+Windows в этом цикле не поддерживается.
+
+## Установка
 
 ```bash
 npm install
-npm run dev
 ```
 
-Приложение прячется в строку меню. Если ключа ещё нет, сразу откроется окно настроек.
+CLI Tauri ставится как `@tauri-apps/cli` (`npx tauri`).
 
-## Как попробовать диктовку
-
-1. Выдайте **микрофон**: Настройки Noketoki → «Разрешить микрофон» (или Системные настройки → Конфиденциальность → Микрофон).
-2. Выдайте **Универсальный доступ**: кнопка в Настройках открывает нужную панель. Без него приложение не сможет нажать Cmd+V в другом окне.
-3. Вставьте ключ AssemblyAI и нажмите «Сохранить ключ». Он шифруется через Electron `safeStorage` и **не** пишется в `settings.json` и не попадает в логи.
-4. Поставьте курсор в Notes, браузер или любое текстовое поле.
-5. Зажмите **Control + Option** (можно сменить в Настройках), говорите, отпустите.
-6. Короткий звук старта, плашка с полосками уровня (не живые слова), затем вставка текста. Предыдущий буфер обмена восстанавливается.
-7. **Esc** во время записи или распознавания отменяет вставку.
-8. Если вставка не прошла, текст остаётся локально: **Control + Shift + V** вставляет последнее.
-
-Умная очистка по умолчанию включена. Если вызов LLM не удался, вставляется сырой текст Sync.
-
-## Сборка Mac-приложения
+## macOS: разработка и диктовка
 
 ```bash
-npm run build:mac
+npx tauri dev
 ```
 
-`electron-builder` собирает `.dmg` / `.zip` с `hardenedRuntime`. Entitlements лежат в `build/entitlements.mac.plist`: микрофон, исходящая сеть, Apple Events для вставки. Запись экрана не запрашивается.
+1. Выдайте **микрофон** при первом удержании.
+2. Выдайте **Универсальный доступ** (кнопка в Настройках) — без него Cmd+V в другое окно не сработает.
+3. Вставьте ключ AssemblyAI. Он сохраняется в Keychain.
+4. Курсор в Notes или поле браузера → зажмите **Control+Option** → говорите → отпустите.
+5. **Esc** отменяет. Если вставка не прошла — **Control+Shift+V**.
 
-Для распространения вне разработки нужна подпись и нотаризация Apple (Developer ID). В этой версии `notarize: false`.
+Умная очистка включена по умолчанию. Если LLM не ответил, вставляется сырой текст Sync.
 
-## Горячие клавиши
+## macOS: установочная сборка (.app / .dmg)
 
-Electron не умеет надёжно перехватывать **Fn**. По умолчанию — Control+Option (только модификаторы). Удерживание отслеживается через HID-состояние клавиш на macOS.
+```bash
+npx tauri build
+```
 
-Hands-free (двойное нажатие, чтобы «защёлкнуть» запись) **не** входит в этот цикл — см. TODO в `src/main/hotkeys.ts`. Сначала работает hold-to-talk.
+Артефакты: `src-tauri/target/release/bundle/dmg` и `…/macos`. Подпись и нотаризация **не** включены. Для распространения задайте свой signing identity в Xcode / переменных окружения Apple.
 
-## Данные на диске
+## iOS
 
-Каталог `~/Library/Application Support/Noketoki/`:
+iOS-цель лежит в `src-tauri/gen/apple`. На Mac с Xcode обновите Xcode-проект:
 
-- `secrets/assemblyai.key` — зашифрованный ключ
-- `settings.json` — язык, словарь, горячие клавиши (без ключа)
-- `history.json` — недавние фразы, только на этом Mac
+```bash
+npx tauri ios init
+```
+
+`--ci` пропускает лишние вопросы. Команда может перезаписать `gen/apple` актуальной схемой Tauri.
+
+### Team ID
+
+В конфиге стоит **заглушка**, не настоящий идентификатор:
+
+- `src-tauri/tauri.conf.json` → `bundle.iOS.developmentTeam`: `YOUR_APPLE_TEAM_ID`
+- `src-tauri/tauri.ios.conf.json` — то же
+- `src-tauri/gen/apple/project.yml` → `DEVELOPMENT_TEAM`
+
+Подставьте 10-символьный Team ID из Xcode → Settings → Accounts. Либо на время сборки:
+
+```bash
+export APPLE_DEVELOPMENT_TEAM=XXXXXXXXXX
+npx tauri ios dev
+```
+
+Не коммитьте настоящий Team ID, если репозиторий публичный.
+
+### Симулятор / устройство
+
+```bash
+npx tauri ios dev
+npx tauri ios build
+```
+
+`ios build` собирает IPA / приложение, которое ставится на симулятор или устройство из Xcode. На телефоне: Settings → Privacy → Microphone — только микрофон.
+
+Кастомная клавиатура (App Extension) **не** входит в этот цикл: это отдельный нативный Swift-таргет, не Tauri.
+
+## Данные
+
+- Настройки и история — в каталоге данных приложения (без ключа).
+- Ключ — Keychain / iOS Keychain (`app.noketoki` / `assemblyai-api-key`).
 
 ## Скрипты
 
 | Команда | Что делает |
 | --- | --- |
-| `npm run dev` | electron-vite + Electron |
-| `npm test` | vitest (чистая логика: WAV, hotkey, STT-конфиг, очистка) |
-| `npm run typecheck` | tsc main/renderer |
-| `npm run build:mac` | production-сборка под macOS |
+| `npm install` | зависимости фронта и CLI |
+| `npx tauri dev` | Vite + нативное окно/меню macOS |
+| `npx tauri build` | .app / .dmg |
+| `npx tauri ios init` | Xcode-проект в `gen/apple` |
+| `npx tauri ios dev` | симулятор или устройство |
+| `npx tauri ios build` | релизная iOS-сборка |
+| `npm test` | vitest (WAV, hotkey, STT-конфиг, очистка) |
+
+Hands-free (двойное нажатие) по-прежнему вне цикла — TODO в `src-tauri/src/macos.rs`.

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Noketoki</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <div id="view-pill" class="view" hidden>
+      <div class="pill" id="pill">
+        <div class="bars" id="pill-bars" aria-hidden="true"></div>
+        <div class="meta">
+          <span class="status" id="pill-status">слушаю</span>
+          <span class="time" id="pill-time">0:00</span>
+        </div>
+        <button class="cancel" id="pill-cancel" type="button" aria-label="Отмена">×</button>
+      </div>
+    </div>
+
+    <div id="view-settings" class="view" hidden>
+      <main class="settings">
+        <header>
+          <p class="eyebrow">строка меню</p>
+          <h1>Noketoki</h1>
+          <p class="lede">
+            Удерживайте горячую клавишу, говорите, отпустите — текст вставится в активное поле. Ключ
+            AssemblyAI хранится в связке ключей macOS.
+          </p>
+        </header>
+        <section class="card warn">
+          <h2>Разрешения macOS</h2>
+          <p>Нужны микрофон и Универсальный доступ. Запись экрана не запрашивается.</p>
+          <div class="row">
+            <span id="mic-status">Микрофон: …</span>
+          </div>
+          <div class="row">
+            <span id="access-status">Универсальный доступ: …</span>
+            <button type="button" id="access-btn">Открыть системные настройки</button>
+          </div>
+        </section>
+        <section class="card" data-settings-form></section>
+      </main>
+    </div>
+
+    <div id="view-ios" class="view ios" hidden>
+      <header class="ios-top">
+        <div>
+          <p class="eyebrow">диктовка</p>
+          <h1>Noketoki</h1>
+        </div>
+        <button type="button" id="ios-settings-toggle" class="ghost">Настройки</button>
+      </header>
+      <p class="lede ios-copy">
+        Удерживайте кнопку, говорите, отпустите. Текст появится здесь — скопируйте или отправьте.
+        Это не системная клавиатура.
+      </p>
+      <div class="bars ios-bars" id="ios-bars" aria-hidden="true"></div>
+      <p class="status" id="ios-status">готово</p>
+      <button type="button" id="ios-ptt" class="ptt">удерживайте</button>
+      <textarea id="ios-result" rows="6" placeholder="Здесь появится распознанный текст"></textarea>
+      <div class="row">
+        <button type="button" id="ios-copy">Копировать</button>
+        <button type="button" class="ghost" id="ios-share">Поделиться</button>
+      </div>
+      <section id="ios-settings" class="card" hidden>
+        <div data-settings-form></div>
+      </section>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

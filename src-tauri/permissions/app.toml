@@ -1,0 +1,113 @@
+[[permission]]
+identifier = "allow-platform"
+description = "Allows reading the current platform (macos / ios / other)."
+commands.allow = ["platform"]
+
+[[permission]]
+identifier = "allow-get-settings"
+description = "Allows reading public settings (never includes the API key)."
+commands.allow = ["get_settings"]
+
+[[permission]]
+identifier = "allow-save-settings"
+description = "Allows saving dictation settings."
+commands.allow = ["save_settings"]
+
+[[permission]]
+identifier = "allow-has-api-key"
+description = "Allows checking whether an AssemblyAI key is stored."
+commands.allow = ["has_api_key"]
+
+[[permission]]
+identifier = "allow-set-api-key"
+description = "Allows writing the AssemblyAI key to the OS keychain."
+commands.allow = ["set_api_key"]
+
+[[permission]]
+identifier = "allow-get-api-key"
+description = "Allows reading the AssemblyAI key from the OS keychain for Sync/LLM calls."
+commands.allow = ["get_api_key"]
+
+[[permission]]
+identifier = "allow-clear-api-key"
+description = "Allows deleting the stored AssemblyAI key."
+commands.allow = ["clear_api_key"]
+
+[[permission]]
+identifier = "allow-get-history"
+description = "Allows reading local dictation history."
+commands.allow = ["get_history"]
+
+[[permission]]
+identifier = "allow-record-history"
+description = "Allows appending a transcript to local history."
+commands.allow = ["record_history"]
+
+[[permission]]
+identifier = "allow-set-last-text"
+description = "Allows remembering the last transcript for paste-last."
+commands.allow = ["set_last_text"]
+
+[[permission]]
+identifier = "allow-get-last-text"
+description = "Allows reading the last transcript."
+commands.allow = ["get_last_text"]
+
+[[permission]]
+identifier = "allow-paste-text"
+description = "Allows clipboard paste + restore on macOS."
+commands.allow = ["paste_text"]
+
+[[permission]]
+identifier = "allow-paste-last"
+description = "Allows pasting the last successful transcript."
+commands.allow = ["paste_last"]
+
+[[permission]]
+identifier = "allow-show-settings"
+description = "Allows showing the settings window."
+commands.allow = ["show_settings"]
+
+[[permission]]
+identifier = "allow-show-pill"
+description = "Allows showing the level-meter pill."
+commands.allow = ["show_pill"]
+
+[[permission]]
+identifier = "allow-hide-pill"
+description = "Allows hiding the level-meter pill."
+commands.allow = ["hide_pill"]
+
+[[permission]]
+identifier = "allow-get-permissions"
+description = "Allows reading microphone / accessibility status."
+commands.allow = ["get_permissions"]
+
+[[permission]]
+identifier = "allow-open-privacy"
+description = "Allows opening macOS Privacy settings."
+commands.allow = ["open_privacy"]
+
+[[set]]
+identifier = "app-commands"
+description = "All Noketoki invoke commands used by the webview."
+permissions = [
+  "allow-platform",
+  "allow-get-settings",
+  "allow-save-settings",
+  "allow-has-api-key",
+  "allow-set-api-key",
+  "allow-get-api-key",
+  "allow-clear-api-key",
+  "allow-get-history",
+  "allow-record-history",
+  "allow-set-last-text",
+  "allow-get-last-text",
+  "allow-paste-text",
+  "allow-paste-last",
+  "allow-show-settings",
+  "allow-show-pill",
+  "allow-hide-pill",
+  "allow-get-permissions",
+  "allow-open-privacy",
+]
