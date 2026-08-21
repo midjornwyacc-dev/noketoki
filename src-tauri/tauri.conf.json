@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Noketoki",
+  "version": "1.0.0",
+  "identifier": "app.noketoki.app",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "macOSPrivateApi": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "Noketoki",
+        "width": 390,
+        "height": 844,
+        "resizable": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; connect-src 'self' https://sync.assemblyai.com https://llm-gateway.assemblyai.com; style-src 'self' 'unsafe-inline'; media-src 'self' blob:; img-src 'self' data:"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["dmg", "app"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.png"
+    ],
+    "macOS": {
+      "minimumSystemVersion": "13.0",
+      "hardenedRuntime": true,
+      "entitlements": "Entitlements.plist",
+      "infoPlist": "Info.plist"
+    },
+    "iOS": {
+      "developmentTeam": "YOUR_APPLE_TEAM_ID",
+      "minimumSystemVersion": "16.0",
+      "infoPlist": "Info.ios.plist"
+    }
+  }
+}

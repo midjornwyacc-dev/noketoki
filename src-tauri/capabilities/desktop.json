@@ -1,0 +1,6 @@
+{
+  "identifier": "desktop-cap",
+  "platforms": ["macOS", "linux", "windows"],
+  "windows": ["main", "settings", "pill"],
+  "permissions": ["autostart:allow-enable", "autostart:allow-disable", "autostart:allow-is-enabled"]
+}

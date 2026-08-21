@@ -1,0 +1,242 @@
+:root {
+  --ink: #241c14;
+  --paper: #f6efe4;
+  --card: #fffaf3;
+  --line: rgba(36, 28, 20, 0.12);
+  --accent: #b5691d;
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body.pill-body,
+body.pill-body html {
+  background: transparent;
+}
+
+.view[hidden] {
+  display: none !important;
+}
+
+.pill-body {
+  background: transparent;
+  overflow: hidden;
+  user-select: none;
+}
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px;
+  margin: 10px 12px;
+  padding: 0 8px 0 16px;
+  border-radius: 999px;
+  background: rgba(28, 22, 16, 0.94);
+  border: 1px solid rgba(232, 196, 140, 0.22);
+  box-shadow: 0 10px 28px rgba(20, 12, 6, 0.38);
+  color: #f3e6d2;
+}
+
+.bars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 28px;
+  width: 148px;
+}
+
+.bars span {
+  display: block;
+  width: 4px;
+  height: 6px;
+  border-radius: 99px;
+  background: #e2b15a;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 78px;
+  line-height: 1.1;
+  color: #f3e6d2;
+}
+
+.status {
+  font-size: 13px;
+}
+
+.time {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  color: rgba(243, 230, 210, 0.62);
+}
+
+.cancel {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(243, 230, 210, 0.08);
+  color: #f3e6d2;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.settings,
+.ios {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 28px 22px 48px;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+.ios {
+  padding-top: calc(28px + env(safe-area-inset-top));
+}
+
+header h1,
+.ios-top h1 {
+  margin: 0 0 8px;
+  font-size: 34px;
+  letter-spacing: -0.03em;
+}
+
+.ios-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  text-transform: lowercase;
+  letter-spacing: 0.16em;
+  font-size: 11px;
+  color: rgba(36, 28, 20, 0.55);
+}
+
+.lede,
+.hint,
+.foot {
+  color: rgba(36, 28, 20, 0.72);
+  line-height: 1.45;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 16px 16px 18px;
+  margin: 16px 0;
+}
+
+.card.warn {
+  background: #fff4e6;
+}
+
+h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 12px 0;
+  font-size: 14px;
+}
+
+label.check {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+input[type='password'],
+select,
+textarea {
+  font: inherit;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  width: 100%;
+}
+
+button {
+  font: inherit;
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: var(--ink);
+  color: var(--paper);
+  cursor: pointer;
+}
+
+button.ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+button.hotkey {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  background: #fff;
+  color: var(--ink);
+  border: 1px dashed var(--accent);
+}
+
+button.hotkey.listening {
+  background: #fff4e6;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.ptt {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  display: block;
+  margin: 28px auto;
+  font-size: 18px;
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: 0 16px 40px rgba(36, 28, 20, 0.25);
+}
+
+.ptt.is-down {
+  background: var(--accent);
+  transform: scale(0.96);
+}
+
+.ios-bars {
+  width: 100%;
+  margin: 12px 0;
+}
+
+.ios-bars span {
+  background: var(--accent);
+}
+
+.ios textarea {
+  min-height: 140px;
+}

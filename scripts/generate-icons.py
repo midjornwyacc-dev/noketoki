@@ -20,6 +20,7 @@ def write_png(path: Path, size: int, color_at) -> None:
             raw.extend((r, g, b, a))
     ihdr = struct.pack(">IIBBBBB", size, size, 8, 6, 0, 0, 0)
     png = b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", ihdr) + chunk(b"IDAT", zlib.compress(bytes(raw), 9)) + chunk(b"IEND", b"")
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(png)
 
 
@@ -40,7 +41,6 @@ def template_color(x: int, y: int, size: int):
 def mark_color(x: int, y: int, size: int):
     r, g, b, a = template_color(x, y, size)
     if a == 0:
-        # warm paper disc
         cx = cy = (size - 1) / 2
         d = ((x - cx) ** 2 + (y - cy) ** 2) ** 0.5
         if d < size * 0.48:
@@ -51,10 +51,20 @@ def mark_color(x: int, y: int, size: int):
     return (36, 28, 20, 255)
 
 
-root = Path("resources")
-root.mkdir(exist_ok=True)
-build = Path("build")
-build.mkdir(exist_ok=True)
-write_png(root / "trayTemplate.png", 32, template_color)
-write_png(build / "icon.png", 512, mark_color)
-print("wrote icons")
+def main() -> None:
+    icons = Path("src-tauri/icons")
+    write_png(icons / "trayTemplate.png", 32, template_color)
+    write_png(icons / "32x32.png", 32, mark_color)
+    write_png(icons / "128x128.png", 128, mark_color)
+    write_png(icons / "128x128@2x.png", 256, mark_color)
+    write_png(icons / "icon.png", 512, mark_color)
+    write_png(
+        Path("src-tauri/gen/apple/Assets.xcassets/AppIcon.appiconset/AppIcon.png"),
+        1024,
+        mark_color,
+    )
+    print("wrote tauri and iOS icons")
+
+
+if __name__ == "__main__":
+    main()

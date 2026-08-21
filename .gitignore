@@ -2,6 +2,7 @@ node_modules/
 dist/
 out/
 release/
+target/
 *.log
 .DS_Store
 .env
@@ -13,8 +14,11 @@ coverage/
 *.key
 *.pem
 user-keys/
-.electron-vite/
-eslintcache
 *.enc
 api-key*
 keys/
+src-tauri/gen/apple/Externals/
+src-tauri/gen/apple/Pods/
+src-tauri/gen/apple/*.xcodeproj/xcuserdata/
+src-tauri/gen/apple/*.xcodeproj/project.xcworkspace/xcuserdata/
+src-tauri/gen/schemas/

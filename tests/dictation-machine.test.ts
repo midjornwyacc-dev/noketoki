@@ -34,6 +34,19 @@ describe('dictation state machine', () => {
     expect(state.lastText).toBe('kept')
   })
 
+  it('keeps lastText when a later take fails transcription', () => {
+    let state = reduceDictation(initialDictationState(), { type: 'ptt-down' })
+    state = reduceDictation(state, { type: 'ptt-up' })
+    state = reduceDictation(state, { type: 'transcribe-ok', text: 'kept' })
+    state = reduceDictation(state, { type: 'insert-ok' })
+    state = reduceDictation(state, { type: 'ptt-down' })
+    state = reduceDictation(state, { type: 'ptt-up' })
+    state = reduceDictation(state, { type: 'transcribe-fail', error: 'сеть' })
+    expect(state.phase).toBe('idle')
+    expect(state.lastText).toBe('kept')
+    expect(state.error).toBe('сеть')
+  })
+
   it('keeps lastText when insert fails so paste-last can retry', () => {
     let state = reduceDictation(initialDictationState(), { type: 'ptt-down' })
     state = reduceDictation(state, { type: 'ptt-up' })

@@ -1,34 +1,27 @@
 {
   "name": "noketoki",
   "version": "1.0.0",
-  "description": "Noketoki — диктовка из строки меню macOS через AssemblyAI",
-  "main": "./out/main/index.js",
-  "author": "Noketoki",
-  "homepage": "https://github.com/noketoki/noketoki",
+  "private": true,
+  "description": "Noketoki — диктовка на macOS и iOS через AssemblyAI",
+  "type": "module",
   "scripts": {
-    "dev": "electron-vite dev",
-    "start": "electron-vite preview",
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
     "test": "vitest run",
-    "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
-    "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
-    "typecheck": "npm run typecheck:node && npm run typecheck:web",
-    "build": "electron-vite build",
-    "postinstall": "electron-builder install-app-deps",
-    "build:unpack": "npm run build && electron-builder --dir",
-    "build:mac": "npm run build && electron-builder --mac"
+    "typecheck": "tsc --noEmit",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build",
+    "ios:init": "tauri ios init",
+    "ios:dev": "tauri ios dev",
+    "ios:build": "tauri ios build"
   },
   "dependencies": {
-    "@electron-toolkit/preload": "^3.0.2",
-    "@electron-toolkit/utils": "^4.0.0",
-    "koffi": "^2.12.1",
-    "undici": "^7.16.0"
+    "@tauri-apps/api": "^2.8.0"
   },
   "devDependencies": {
-    "@electron-toolkit/tsconfig": "^2.0.0",
-    "@types/node": "^22.19.1",
-    "electron": "^39.2.6",
-    "electron-builder": "^26.0.12",
-    "electron-vite": "^5.0.0",
+    "@tauri-apps/cli": "^2.8.0",
     "typescript": "^5.9.3",
     "vite": "^7.2.6",
     "vitest": "^3.2.4"
