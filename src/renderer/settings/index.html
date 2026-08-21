@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self';" />
+    <title>Noketoki — настройки</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">строка меню</p>
+        <h1>Noketoki</h1>
+        <p class="lede">
+          Удерживайте горячую клавишу, говорите, отпустите — текст вставится в активное поле. Ключ
+          AssemblyAI хранится только на этом Mac.
+        </p>
+      </header>
+
+      <section class="card warn" id="perm-card">
+        <h2>Разрешения macOS</h2>
+        <p>
+          Нужны микрофон и Универсальный доступ (чтобы вставить текст через Cmd+V). Запись экрана
+          не требуется и не запрашивается.
+        </p>
+        <div class="row">
+          <span id="mic-status">Микрофон: …</span>
+          <button type="button" id="mic-btn">Разрешить микрофон</button>
+        </div>
+        <div class="row">
+          <span id="access-status">Универсальный доступ: …</span>
+          <button type="button" id="access-btn">Открыть системные настройки</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Ключ AssemblyAI</h2>
+        <p class="hint" id="key-status">Ключ не сохранён.</p>
+        <label>
+          Вставить ключ
+          <input id="api-key" type="password" autocomplete="off" spellcheck="false" placeholder="ключ из кабинета AssemblyAI" />
+        </label>
+        <div class="row">
+          <button type="button" id="save-key">Сохранить ключ</button>
+          <button type="button" class="ghost" id="clear-key">Удалить</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Диктовка</h2>
+        <label>
+          Горячая клавиша (удерживать)
+          <button type="button" id="hotkey" class="hotkey">Control + Option</button>
+        </label>
+        <p class="hint">Нажмите кнопку и зажмите новое сочетание. Fn недоступен в Electron.</p>
+        <label>
+          Язык
+          <select id="language"></select>
+        </label>
+        <label class="check">
+          <input type="checkbox" id="cleanup" />
+          Умная очистка (filler, самопоправки, пунктуация)
+        </label>
+        <label class="check">
+          <input type="checkbox" id="sounds" />
+          Короткие звуки старта и стопа
+        </label>
+        <label class="check">
+          <input type="checkbox" id="login" />
+          Открывать при входе в систему
+        </label>
+      </section>
+
+      <section class="card">
+        <h2>Личный словарь</h2>
+        <p class="hint">Имена и термины уходят в keyterms_prompt. По одному на строку.</p>
+        <textarea id="dictionary" rows="6" placeholder="Noketoki&#10;Калининград"></textarea>
+        <button type="button" id="save-settings">Сохранить настройки</button>
+      </section>
+
+      <p class="foot">Вставить последнее: Control + Shift + V · Esc отменяет текущую запись</p>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
