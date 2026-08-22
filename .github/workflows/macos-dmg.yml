@@ -1,0 +1,91 @@
+name: macOS DMG
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+env:
+  CI: true
+
+jobs:
+  dmg:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Cargo
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - name: Install JS dependencies
+        run: |
+          # Lockfile was generated on Linux; npm skips darwin optional binaries
+          # (rollup#5073 / npm#4828). Fresh install on the runner picks them up.
+          rm -rf node_modules package-lock.json
+          npm install
+
+      - name: Build unsigned macOS DMG
+        run: |
+          npx tauri build --bundles dmg --verbose --config '{
+            "bundle": {
+              "macOS": {
+                "signingIdentity": "-",
+                "hardenedRuntime": false
+              }
+            }
+          }'
+
+      - name: Stage DMG asset
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          if [[ "$TAG" != v* ]]; then TAG="v0.1.1"; fi
+          VER="${TAG#v}"
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
+          echo "VER=$VER" >> "$GITHUB_ENV"
+          shopt -s nullglob
+          files=(src-tauri/target/release/bundle/dmg/*.dmg)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No DMG under src-tauri/target/release/bundle/dmg"
+            find src-tauri/target/release/bundle -type f -print || true
+            exit 1
+          fi
+          cp "${files[0]}" "Noketoki-${VER}-macos.dmg"
+          ls -lh "Noketoki-${VER}-macos.dmg"
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG }}
+          name: Noketoki ${{ env.VER }}
+          draft: false
+          prerelease: false
+          fail_on_unmatched_files: true
+          make_latest: true
+          files: Noketoki-${{ env.VER }}-macos.dmg
+          body: |
+            Noketoki — диктовка через AssemblyAI: удерживаете горячую клавишу, говорите, отпускаете — текст вставляется в активное поле.
+
+            Запросы Sync и LLM идут из нативного процесса (не из WKWebView).
+
+            ## Установка
+            1. Откройте DMG и перетащите **Noketoki** в Программы.
+            2. Сборка **без подписи Apple**. При первом запуске: правый клик по приложению → **Открыть** (Gatekeeper).
+            3. Разрешите **Микрофон** и **Универсальный доступ**.
+            4. Вставьте ключ AssemblyAI в Настройках. Он хранится в связке ключей, не в git.
+            5. Курсор в Notes или поле браузера → зажмите **Control+Option** → говорите → отпустите.
+
+            Esc отменяет запись. Если вставка не прошла — **Control+Shift+V**.

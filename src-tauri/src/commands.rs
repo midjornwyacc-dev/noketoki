@@ -2,7 +2,9 @@ use crate::history::{self, HistoryItem};
 use crate::secrets;
 use crate::settings::{self, AppSettings};
 use crate::state::AppState;
-use tauri::{AppHandle, Manager, State};
+use tauri::{AppHandle, State};
+#[cfg(not(target_os = "macos"))]
+use tauri::Manager;
 
 #[derive(serde::Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -206,6 +208,24 @@ pub fn get_permissions() -> PermissionStatus {
             accessibility: true,
         }
     }
+}
+
+#[tauri::command]
+pub async fn transcribe_sync(
+    wav_base64: String,
+    config: serde_json::Value,
+) -> Result<String, String> {
+    crate::assemblyai::transcribe_sync(wav_base64, config).await
+}
+
+#[tauri::command]
+pub async fn cleanup_transcript(text: String, system_prompt: String) -> Result<String, String> {
+    crate::assemblyai::cleanup_transcript(text, system_prompt).await
+}
+
+#[tauri::command]
+pub async fn warm_sync() -> bool {
+    crate::assemblyai::warm_sync().await
 }
 
 #[tauri::command]
