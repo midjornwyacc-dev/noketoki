@@ -3,7 +3,7 @@ import { initialDictationState, reduceDictation, type DictationState } from '../
 import { buildSyncConfig } from '../shared/sync-config'
 import { encodeWav, pcmDurationMs } from '../shared/wav'
 import { cleanupTranscript, transcribeSync, warmSyncConnection } from './assemblyai'
-import { getApiKey, getSettings, hidePill, pasteText, recordHistory, setLastText, showPill } from './api'
+import { getSettings, hidePill, pasteText, recordHistory, setLastText, showPill } from './api'
 import { MicCapture } from './capture'
 import { playCue } from './sounds'
 
@@ -94,24 +94,14 @@ export class DictationSession {
   }
 
   private async transcribe(pcm: Int16Array, sampleRate: number, session: number): Promise<void> {
-    const apiKey = await getApiKey()
-    if (!apiKey) {
-      this.state = reduceDictation(this.state, {
-        type: 'transcribe-fail',
-        error: 'Добавьте ключ AssemblyAI в Настройках.'
-      })
-      this.hooks.onState(this.state)
-      return
-    }
     try {
       const settings = await getSettings()
       const raw = await transcribeSync({
-        apiKey,
         wav: encodeWav(pcm, sampleRate),
         config: buildSyncConfig({ language: settings.language, dictionary: settings.dictionary })
       })
       if (this.session !== session) return
-      const text = settings.smartCleanup ? await cleanupTranscript({ apiKey, text: raw }) : raw
+      const text = settings.smartCleanup ? await cleanupTranscript({ text: raw }) : raw
       if (this.session !== session) return
       this.state = reduceDictation(this.state, { type: 'transcribe-ok', text })
       await setLastText(text)

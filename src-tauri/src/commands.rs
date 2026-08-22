@@ -211,6 +211,24 @@ pub fn get_permissions() -> PermissionStatus {
 }
 
 #[tauri::command]
+pub async fn transcribe_sync(
+    wav_base64: String,
+    config: serde_json::Value,
+) -> Result<String, String> {
+    crate::assemblyai::transcribe_sync(wav_base64, config).await
+}
+
+#[tauri::command]
+pub async fn cleanup_transcript(text: String, system_prompt: String) -> Result<String, String> {
+    crate::assemblyai::cleanup_transcript(text, system_prompt).await
+}
+
+#[tauri::command]
+pub async fn warm_sync() -> bool {
+    crate::assemblyai::warm_sync().await
+}
+
+#[tauri::command]
 pub fn open_privacy(kind: String) {
     #[cfg(target_os = "macos")]
     {

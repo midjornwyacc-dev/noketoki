@@ -88,6 +88,21 @@ identifier = "allow-open-privacy"
 description = "Allows opening macOS Privacy settings."
 commands.allow = ["open_privacy"]
 
+[[permission]]
+identifier = "allow-transcribe-sync"
+description = "Allows the native Sync STT request (no webview CORS)."
+commands.allow = ["transcribe_sync"]
+
+[[permission]]
+identifier = "allow-cleanup-transcript"
+description = "Allows the native LLM Gateway cleanup request."
+commands.allow = ["cleanup_transcript"]
+
+[[permission]]
+identifier = "allow-warm-sync"
+description = "Allows warming the Sync connection."
+commands.allow = ["warm_sync"]
+
 [[set]]
 identifier = "app-commands"
 description = "All Noketoki invoke commands used by the webview."
@@ -110,4 +125,7 @@ permissions = [
   "allow-hide-pill",
   "allow-get-permissions",
   "allow-open-privacy",
+  "allow-transcribe-sync",
+  "allow-cleanup-transcript",
+  "allow-warm-sync",
 ]

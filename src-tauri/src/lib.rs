@@ -1,3 +1,4 @@
+mod assemblyai;
 mod commands;
 mod history;
 mod secrets;
@@ -48,7 +49,10 @@ pub fn run() {
             commands::show_pill,
             commands::hide_pill,
             commands::get_permissions,
-            commands::open_privacy
+            commands::open_privacy,
+            commands::transcribe_sync,
+            commands::cleanup_transcript,
+            commands::warm_sync
         ])
         .setup(|app| {
             #[cfg(target_os = "macos")]

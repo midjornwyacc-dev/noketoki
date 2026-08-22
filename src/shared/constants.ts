@@ -8,3 +8,4 @@ export const LLM_MODEL = 'qwen3.5-4b-32k-fast'
 export const MIN_CLIP_MS = 80
 export const MAX_CLIP_MS = 120_000
 export const SAMPLE_RATE = 16_000
+export const ASSEMBLY_CLIENT_TIMEOUT_MS = 60_000

@@ -51,6 +51,11 @@ jobs:
 
       - name: Stage DMG asset
         run: |
+          TAG="${GITHUB_REF_NAME}"
+          if [[ "$TAG" != v* ]]; then TAG="v0.1.1"; fi
+          VER="${TAG#v}"
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
+          echo "VER=$VER" >> "$GITHUB_ENV"
           shopt -s nullglob
           files=(src-tauri/target/release/bundle/dmg/*.dmg)
           if [ ${#files[@]} -eq 0 ]; then
@@ -58,21 +63,23 @@ jobs:
             find src-tauri/target/release/bundle -type f -print || true
             exit 1
           fi
-          cp "${files[0]}" Noketoki-0.1.0-macos.dmg
-          ls -lh Noketoki-0.1.0-macos.dmg
+          cp "${files[0]}" "Noketoki-${VER}-macos.dmg"
+          ls -lh "Noketoki-${VER}-macos.dmg"
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.1.0
-          name: Noketoki 0.1.0
+          tag_name: ${{ env.TAG }}
+          name: Noketoki ${{ env.VER }}
           draft: false
           prerelease: false
           fail_on_unmatched_files: true
           make_latest: true
-          files: Noketoki-0.1.0-macos.dmg
+          files: Noketoki-${{ env.VER }}-macos.dmg
           body: |
             Noketoki — диктовка через AssemblyAI: удерживаете горячую клавишу, говорите, отпускаете — текст вставляется в активное поле.
+
+            Запросы Sync и LLM идут из нативного процесса (не из WKWebView).
 
             ## Установка
             1. Откройте DMG и перетащите **Noketoki** в Программы.
